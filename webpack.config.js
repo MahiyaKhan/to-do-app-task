@@ -2,16 +2,26 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-  entry: "./src/index.js",
+  entry: "./src/index.js", // Ensure your entry file is correct
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "bundle.js",
-    clean: true,
+    publicPath: "/", // Important for SPA routing
+  },
+  mode: "development",
+  devServer: {
+    historyApiFallback: true, // Ensures deep links work after deployment
+    static: {
+      directory: path.resolve(__dirname, "dist"),
+    },
+    port: 3000,
+    open: true,
+    hot: true,
   },
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
@@ -21,10 +31,6 @@ module.exports = {
         test: /\.css$/,
         use: ["style-loader", "css-loader"],
       },
-      {
-        test: /\.(png|jpg|jpeg|gif)$/i,
-        type: "asset/resource",
-      },
     ],
   },
   plugins: [
@@ -33,11 +39,7 @@ module.exports = {
       filename: "index.html",
     }),
   ],
-  devServer: {
-    static: path.resolve(__dirname, "dist"),
-    hot: true,
-    port: 3000,
-    open: true,
+  resolve: {
+    extensions: [".js", ".jsx"],
   },
-  mode: "development",
 };
